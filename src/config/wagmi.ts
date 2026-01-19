@@ -49,3 +49,4 @@ export const USDC_ABI = [
 // Tambahkan di akhir file wagmi.ts
 export const BASESCAN_API_KEY = "G2YNEAWZRFPGSKV1HMGDS1TTV98JZKZ5AR"; // Nanti bisa daftar di basescan.org
 export const BASESCAN_API_URL = "https://api.basescan.org/api";
+

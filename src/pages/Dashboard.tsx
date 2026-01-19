@@ -566,7 +566,11 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Monthly Summary - Horizontal Layout */}
+            <p className="text-gray-900 font-semibold mb-4 text-sm">
+                Monthly Cashflow :
+              </p>
             <div className="grid grid-cols-2 gap-4">
+             
               {/* Inflow */}
               <div className="border-2 border-gray-600 rounded-2xl p-4">
                 <p className="text-xs text-gray-600 mb-2 font-medium">Inflow</p>
