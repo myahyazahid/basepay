@@ -6,6 +6,7 @@ import Scan from './pages/Scan';
 import Request from './pages/Request';
 import History from './pages/History';
 import Analytics from './pages/Analytics';
+import Rewards from './pages/Rewards';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/request" element={<Request />} />
         <Route path="/history" element={<History />} />
         <Route path="/analytics" element={<Analytics />} />
+        <Route path="/rewards" element={<Rewards />} />
       </Routes>
     </BrowserRouter>
   );

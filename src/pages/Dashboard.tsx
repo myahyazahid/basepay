@@ -351,11 +351,21 @@
 
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Copy, ScanLine, QrCode, Clock, TrendingUp } from "lucide-react";
+import {
+  User,
+  Copy,
+  ScanLine,
+  QrCode,
+  Clock,
+  TrendingUp,
+  Gift,
+} from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { useAccount, useReadContract } from "wagmi";
 import { USDC_CONTRACT_ADDRESS, USDC_ABI } from "../config/wagmi";
 import { formatUnits } from "viem";
+
+//                                                             ↑ TAMBAH ini
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -458,12 +468,11 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <Toaster />
-       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
-      {/* Mobile Container - Tambah shadow */}
-      <div className="w-full max-w-[390px] min-h-screen bg-white shadow-2xl">
-        
-        {/* Header - Inline Layout */}
-        <div className="px-5 py-4 flex items-center justify-between border-b border-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        {/* Mobile Container - Tambah shadow */}
+        <div className="w-full max-w-[390px] min-h-screen bg-white shadow-2xl">
+          {/* Header - Inline Layout */}
+          <div className="px-5 py-4 flex items-center justify-between border-b border-gray-100">
             <h1 className="text-xl font-bold text-blue-600">BasePay</h1>
 
             <div className="flex items-center gap-3">
@@ -502,59 +511,59 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Quick Actions */}
+            {/* Quick Actions */}
             <div>
               <p className="text-gray-900 font-semibold mb-4 text-sm">
                 Quick Actions :
               </p>
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-5 gap-3">
+                {" "}
+                {/* ← Ganti jadi grid-cols-5, gap lebih kecil */}
                 {/* Pay */}
                 <button
                   onClick={() => navigate("/scan")}
-                  className="flex flex-col items-center gap-3"
+                  className="flex flex-col items-center gap-2"
                 >
-                  <div className="w-16 h-16 border-2 border-gray-900 rounded-2xl flex items-center justify-center hover:bg-gray-50 transition-colors">
+                  <div className="w-14 h-14 border-2 border-gray-900 rounded-2xl flex items-center justify-center hover:bg-gray-50 transition-colors">
                     <ScanLine
-                      className="w-7 h-7 text-gray-900"
+                      className="w-6 h-6 text-gray-900"
                       strokeWidth={2}
                     />
                   </div>
                   <span className="text-xs font-medium text-gray-900">Pay</span>
                 </button>
-
                 {/* Request */}
                 <button
                   onClick={() => navigate("/request")}
-                  className="flex flex-col items-center gap-3"
+                  className="flex flex-col items-center gap-2"
                 >
-                  <div className="w-16 h-16 border-2 border-gray-900 rounded-2xl flex items-center justify-center hover:bg-gray-50 transition-colors">
-                    <QrCode className="w-7 h-7 text-gray-900" strokeWidth={2} />
+                  <div className="w-14 h-14 border-2 border-gray-900 rounded-2xl flex items-center justify-center hover:bg-gray-50 transition-colors">
+                    <QrCode className="w-6 h-6 text-gray-900" strokeWidth={2} />
                   </div>
                   <span className="text-xs font-medium text-gray-900">
                     Request
                   </span>
                 </button>
-
                 {/* History */}
                 <button
                   onClick={() => navigate("/history")}
-                  className="flex flex-col items-center gap-3"
+                  className="flex flex-col items-center gap-2"
                 >
-                  <div className="w-16 h-16 border-2 border-gray-900 rounded-2xl flex items-center justify-center hover:bg-gray-50 transition-colors">
-                    <Clock className="w-7 h-7 text-gray-900" strokeWidth={2} />
+                  <div className="w-14 h-14 border-2 border-gray-900 rounded-2xl flex items-center justify-center hover:bg-gray-50 transition-colors">
+                    <Clock className="w-6 h-6 text-gray-900" strokeWidth={2} />
                   </div>
                   <span className="text-xs font-medium text-gray-900">
-                    Hystory
+                    History
                   </span>
                 </button>
-
                 {/* Analytic */}
                 <button
                   onClick={() => navigate("/analytics")}
-                  className="flex flex-col items-center gap-3"
+                  className="flex flex-col items-center gap-2"
                 >
-                  <div className="w-16 h-16 border-2 border-gray-900 rounded-2xl flex items-center justify-center hover:bg-gray-50 transition-colors">
+                  <div className="w-14 h-14 border-2 border-gray-900 rounded-2xl flex items-center justify-center hover:bg-gray-50 transition-colors">
                     <TrendingUp
-                      className="w-7 h-7 text-gray-900"
+                      className="w-6 h-6 text-gray-900"
                       strokeWidth={2}
                     />
                   </div>
@@ -562,15 +571,26 @@ const Dashboard: React.FC = () => {
                     Analytic
                   </span>
                 </button>
+                {/* Rewards - NEW */}
+                <button
+                  onClick={() => navigate("/rewards")}
+                  className="flex flex-col items-center gap-2"
+                >
+                  <div className="w-14 h-14 border-2 border-gray-900 rounded-2xl flex items-center justify-center hover:bg-gray-50 transition-colors">
+                    <Gift className="w-6 h-6 text-gray-900" strokeWidth={2} />
+                  </div>
+                  <span className="text-xs font-medium text-gray-900">
+                    Rewards
+                  </span>
+                </button>
               </div>
             </div>
 
             {/* Monthly Summary - Horizontal Layout */}
             <p className="text-gray-900 font-semibold mb-4 text-sm">
-                Monthly Cashflow :
-              </p>
+              Monthly Cashflow :
+            </p>
             <div className="grid grid-cols-2 gap-4">
-             
               {/* Inflow */}
               <div className="border-2 border-gray-600 rounded-2xl p-4">
                 <p className="text-xs text-gray-600 mb-2 font-medium">Inflow</p>
