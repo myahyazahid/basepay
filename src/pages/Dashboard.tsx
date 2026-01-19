@@ -361,15 +361,17 @@ import {
   Gift,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
-import { useAccount, useReadContract } from "wagmi";
+import { useAccount, useReadContract, useSwitchChain } from 'wagmi';
 import { USDC_CONTRACT_ADDRESS, USDC_ABI } from "../config/wagmi";
 import { formatUnits } from "viem";
+
 
 //                                                             ↑ TAMBAH ini
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { address, isConnected, chain } = useAccount();
+    const { switchChain } = useSwitchChain();
 
   // Redirect ke home kalau belum connected
   useEffect(() => {
@@ -453,6 +455,40 @@ const Dashboard: React.FC = () => {
     });
   };
 
+
+  const handleSwitchToBase = async () => {
+  try {
+    await switchChain({ chainId: 8453 }); // Base chainId
+    toast.success('Switched to Base network!', {
+      duration: 2000,
+      position: 'top-center',
+      style: {
+        background: '#10b981',
+        color: '#fff',
+        borderRadius: '12px',
+      },
+    });
+  } catch (error: any) {
+    console.error('Switch network error:', error);
+    
+    // Kalau user reject
+    if (error?.message?.includes('User rejected')) {
+      toast.error('Network switch cancelled', {
+        duration: 2000,
+        position: 'top-center',
+      });
+    } else {
+      toast.error('Failed to switch network', {
+        duration: 3000,
+        position: 'top-center',
+      });
+    }
+  }
+};
+
+
+
+
   // Loading state
   if (!isConnected || !address) {
     return (
@@ -494,6 +530,27 @@ const Dashboard: React.FC = () => {
               </button>
             </div>
           </div>
+
+          
+{/* Network Warning jika bukan Base */}
+{chain?.id !== 8453 && (
+  <div className="px-5 py-4 bg-red-50 border-b border-red-100">
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex-1">
+        <p className="text-sm text-red-600 font-semibold mb-1">⚠️ Wrong Network</p>
+        <p className="text-xs text-red-500">
+          You're on <span className="font-semibold">{chain?.name || 'Unknown'}</span>. Please switch to Base network.
+        </p>
+      </div>
+      <button
+        onClick={handleSwitchToBase}
+        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors active:scale-95 whitespace-nowrap"
+      >
+        Switch to Base
+      </button>
+    </div>
+  </div>
+)}
 
           {/* Main Content */}
           <div className="px-5 py-6 space-y-6">
