@@ -1,8 +1,8 @@
-import React, { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { X } from 'lucide-react';
-import { useConnect } from 'wagmi';
-import toast from 'react-hot-toast';
+import React, { Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { X } from "lucide-react";
+import { useConnect } from "wagmi";
+import toast from "react-hot-toast";
 
 interface WalletConnectModalProps {
   isOpen: boolean;
@@ -19,28 +19,32 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
     try {
       await connect({ connector });
       onClose();
-      toast.success('Wallet connected!');
+      toast.success("Wallet connected!");
     } catch (error: any) {
-      console.error('Connection failed:', error);
-      toast.error(error?.message || 'Failed to connect wallet');
+      console.error("Connection failed:", error);
+      toast.error(error?.message || "Failed to connect wallet");
     }
   };
 
   // Map connector names to user-friendly info
   const getWalletInfo = (connector: any) => {
     const name = connector.name.toLowerCase();
-    
-    if (name.includes('injected') || name.includes('metamask')) {
-      return { name: 'MetaMask', icon: '🦊', description: 'Browser Extension' };
+
+    if (name.includes("injected") || name.includes("metamask")) {
+      return { name: "MetaMask", icon: "🦊", description: "Browser Extension" };
     }
-    if (name.includes('walletconnect')) {
-      return { name: 'WalletConnect', icon: '🔗', description: 'Scan QR Code' };
+    if (name.includes("walletconnect")) {
+      return { name: "WalletConnect", icon: "🔗", description: "Scan QR Code" };
     }
-    if (name.includes('coinbase')) {
-      return { name: 'Coinbase Wallet', icon: '🔵', description: 'Mobile & Extension' };
+    if (name.includes("coinbase")) {
+      return {
+        name: "Coinbase Wallet",
+        icon: "🔵",
+        description: "Mobile & Extension",
+      };
     }
-    
-    return { name: connector.name, icon: '💼', description: 'Connect' };
+
+    return { name: connector.name, icon: "💼", description: "Connect" };
   };
 
   return (
@@ -128,7 +132,6 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
 
 export default WalletConnectModal;
 
-
 // import React, { Fragment } from 'react';
 // import { Dialog, Transition } from '@headlessui/react';
 // import { X } from 'lucide-react';
@@ -150,31 +153,31 @@ export default WalletConnectModal;
 //   const handleConnect = async (connector: any) => {
 //     try {
 //       console.log('User clicked connect:', connector.name);
-      
+
 //       // Disconnect dulu untuk clear cache
 //       disconnect();
-      
+
 //       // Clear storage
 //       localStorage.removeItem('wagmi.store');
 //       localStorage.removeItem('wagmi.cache');
 //       localStorage.removeItem('wagmi.recentConnectorId');
-      
+
 //       await new Promise(resolve => setTimeout(resolve, 100));
-      
+
 //       // Connect dengan connector
 //       await connect({ connector });
-      
+
 //       console.log('Connection successful');
-      
+
 //       onClose();
 //       toast.success('Wallet connected!', {
 //         duration: 2000,
 //         position: 'top-center',
 //       });
-      
+
 //     } catch (error: any) {
 //       console.error('Connection failed:', error);
-      
+
 //       if (error?.message?.includes('User rejected') || error?.message?.includes('rejected')) {
 //         toast.error('Connection cancelled', {
 //           duration: 2000,
@@ -191,7 +194,7 @@ export default WalletConnectModal;
 
 //   const getWalletInfo = (connector: any) => {
 //     const name = connector.name.toLowerCase();
-    
+
 //     if (name.includes('injected') || name.includes('metamask')) {
 //       return { name: 'Browser Wallet', icon: '🦊', description: 'Injected Provider' };
 //     }
@@ -201,7 +204,7 @@ export default WalletConnectModal;
 //     if (name.includes('coinbase')) {
 //       return { name: 'Coinbase Wallet', icon: '🔵', description: 'Mobile & Extension' };
 //     }
-    
+
 //     return { name: connector.name, icon: '💼', description: 'Connect' };
 //   };
 
