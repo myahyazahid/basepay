@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <WagmiProvider 
       config={config}
-      reconnectOnMount={false} // ← TAMBAHKAN INI untuk disable auto-reconnect
+      reconnectOnMount={true} // ← TAMBAHKAN INI untuk disable auto-reconnect
     >
       <QueryClientProvider client={queryClient}>
         <App />
