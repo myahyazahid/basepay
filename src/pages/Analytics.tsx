@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
-const Analytics: React.FC = () => {
+const AnalyticsPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
@@ -24,4 +24,4 @@ const Analytics: React.FC = () => {
   );
 };
 
-export default Analytics;
+export default AnalyticsPage;
