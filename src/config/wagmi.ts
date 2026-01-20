@@ -7,14 +7,25 @@ import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors";
 const projectId = "52732025d7f26eafe99545ebbad20640";
 
 export const config = createConfig({
+
   chains: [base],
+  
   connectors: [
     injected({
       shimDisconnect: true,
     }),
-    walletConnect({
+     walletConnect({
       projectId,
       showQrModal: true,
+      metadata: {
+        name: 'BasePay',
+        description: 'Crypto Payment Solution on Base',
+        url:
+          typeof window !== 'undefined'
+            ? window.location.origin
+            : 'https://basepay.vercel.app', // ganti sesuai domain
+        icons: ['https://avatars.githubusercontent.com/u/37784886'],
+      },
     }),
     coinbaseWallet({
       appName: "BasePay",
@@ -24,6 +35,8 @@ export const config = createConfig({
     [base.id]: http(),
   },
 });
+
+ 
 
 // USDC Contract Address di Base
 export const USDC_CONTRACT_ADDRESS =
