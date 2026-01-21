@@ -6,9 +6,9 @@ import Scan from "./pages/Scan";
 import Request from "./pages/Request";
 import History from "./pages/History";
 import AnalyticsPage from "./pages/Analytics";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import Rewards from "./pages/Rewards";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
 
 function App() {
