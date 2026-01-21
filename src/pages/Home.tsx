@@ -47,7 +47,8 @@ const Home: React.FC = () => {
 
           <div className="flex justify-center mb-16">
             <img 
-              src="/src/assets/images/hero-illustration.png" 
+              // src="/src/assets/images/hero-illustration.png"
+              src="../public/hero-illustration.png" 
               alt="BasePay Hero" 
               className="w-72 h-72 object-contain"
             />
