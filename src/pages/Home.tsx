@@ -2,13 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccount, useDisconnect } from 'wagmi'; // ← Tambah useDisconnect
 import WalletConnectModal from '../components/wallet/WalletConnectModal';
+import { ensureUserExists } from '../utils/userManagement'; // ← TAMBAH INI
+import toast from 'react-hot-toast'
 
 const Home: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userClickedConnect, setUserClickedConnect] = useState(false); // ← TAMBAH state ini
   const navigate = useNavigate();
-  const { isConnected } = useAccount();
+  // const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
+
   const { disconnect } = useDisconnect(); // ← TAMBAH ini
+
+  useEffect(() => {
+    const handleUserRegistration = async () => {
+      if (isConnected && address && userClickedConnect) {
+        console.log('🔄 Checking/Creating user for:', address)
+        
+        const success = await ensureUserExists(address)
+        
+        if (success) {
+          toast.success('Welcome to BasePay! 🎉', {
+            duration: 2000,
+            position: 'top-center',
+          })
+        } else {
+          toast.error('Failed to register user. Please try again.', {
+            duration: 3000,
+            position: 'top-center',
+          })
+        }
+      }
+    }
+
+    handleUserRegistration()
+  }, [isConnected, address, userClickedConnect])
 
   // ← TAMBAH useEffect ini untuk detect auto-connect
   useEffect(() => {
