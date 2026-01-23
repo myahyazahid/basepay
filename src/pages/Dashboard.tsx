@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   User,
@@ -16,11 +16,16 @@ import { formatUnits } from "viem";
 // ← TAMBAH import hooks
 import { useTransactions } from "../hooks/useTransactions";
 import { useMonthlyCashflow } from "../hooks/useMonthlyCashflow";
+import ProfileSetupModal from "../components/ProfileSetupModal";
+import { checkProfileComplete } from "../utils/userManagement";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { address, isConnected, chain } = useAccount();
   const { switchChain } = useSwitchChain();
+
+  const [showProfileSetup, setShowProfileSetup] = useState(false);
+  const [profileChecked, setProfileChecked] = useState(false);
 
   // ← TAMBAH: Fetch data dari Supabase
   const { transactions, loading: txLoading } = useTransactions(address);
@@ -32,6 +37,38 @@ const Dashboard: React.FC = () => {
       navigate("/");
     }
   }, [isConnected, navigate]);
+
+  // Redirect ke home kalau belum connected
+  useEffect(() => {
+    if (!isConnected) {
+      navigate("/");
+    }
+  }, [isConnected, navigate]);
+
+  // ← TAMBAH useEffect INI (Check profile completion)
+  useEffect(() => {
+    const checkProfile = async () => {
+      if (isConnected && address && !profileChecked) {
+        // Wait sebentar supaya user data sudah ter-insert
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        const isComplete = await checkProfileComplete(address);
+
+        if (!isComplete) {
+          console.log("⚠️ Profile incomplete, showing setup modal");
+          setShowProfileSetup(true);
+        } else {
+          console.log("✅ Profile is complete");
+        }
+
+        setProfileChecked(true);
+      }
+    };
+
+    checkProfile();
+  }, [isConnected, address, profileChecked]);
+
+  // ... rest of useEffect yang sudah ada
 
   // Detect network change
   useEffect(() => {
@@ -147,6 +184,11 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <Toaster />
+
+      <ProfileSetupModal
+        isOpen={showProfileSetup}
+        onClose={() => setShowProfileSetup(false)}
+      />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
         <div className="w-full max-w-[390px] min-h-screen bg-white shadow-2xl">
           {/* Header */}

@@ -1,5 +1,7 @@
 import { supabase } from '../config/supabase'
 
+
+
 export const ensureUserExists = async (walletAddress: string): Promise<boolean> => {
   try {
     const normalizedAddress = walletAddress.toLowerCase()
@@ -44,6 +46,40 @@ export const ensureUserExists = async (walletAddress: string): Promise<boolean> 
 
   } catch (error) {
     console.error('❌ Error in ensureUserExists:', error)
+    return false
+  }
+
+  
+}
+export const checkProfileComplete = async (walletAddress: string): Promise<boolean> => {
+  try {
+    const normalizedAddress = walletAddress.toLowerCase()
+
+    const { data: user, error } = await supabase
+      .from('user')
+      .select('username, email')
+      .eq('wallet', normalizedAddress)
+      .single()
+
+    if (error) {
+      console.error('Error checking profile:', error)
+      return false
+    }
+
+    // Check apakah username DAN email sudah diisi
+    const isComplete = !!(user?.username && user?.email)
+    
+    console.log('📋 Profile check:', {
+      wallet: normalizedAddress,
+      username: user?.username,
+      email: user?.email,
+      isComplete
+    })
+
+    return isComplete
+
+  } catch (error) {
+    console.error('Error in checkProfileComplete:', error)
     return false
   }
 }
