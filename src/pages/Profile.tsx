@@ -105,7 +105,7 @@ const Profile: React.FC = () => {
 
   const copyBasepayName = () => {
     if (basepayName) {
-      navigator.clipboard.writeText(`${basepayName}.paybase`);
+      navigator.clipboard.writeText(`${basepayName}.basepay`);
       toast.success('BasePay name copied!', {
         duration: 2000,
         position: 'top-center',
@@ -179,7 +179,7 @@ const Profile: React.FC = () => {
                 onClick={copyBasepayName}
                 className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-white text-sm font-medium transition-colors"
               >
-                <span>{basepayName}.paybase</span>
+                <span>{basepayName}.basepay</span>
                 <Copy className="w-4 h-4" />
               </button>
             ) : (
