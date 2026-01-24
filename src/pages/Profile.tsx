@@ -226,7 +226,7 @@ const Profile: React.FC = () => {
           <div className="mx-4 mt-4 space-y-2">
             {/* Edit Profile */}
             <button
-              onClick={() => navigate('/edit-profile')}
+              onClick={() => navigate('/EditProfile')}
               className="w-full bg-white border border-gray-200 rounded-2xl p-4 flex items-center gap-4 hover:bg-gray-50 transition-colors active:scale-98"
             >
               <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
