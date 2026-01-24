@@ -263,7 +263,7 @@ const Dashboard: React.FC = () => {
               </p>
               <div className="grid grid-cols-5 gap-3">
                 <button
-                  onClick={() => navigate("/scan")}
+                  onClick={() => navigate("/send")}
                   className="flex flex-col items-center gap-2"
                 >
                   <div className="w-14 h-14 border-2 border-gray-900 rounded-2xl flex items-center justify-center hover:bg-gray-50 transition-colors">

@@ -1,8 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, QrCode, User, Wallet } from 'lucide-react';
+import { ArrowLeft, QrCode, Wallet } from 'lucide-react';
+import { AtSign } from "lucide-react";
 
-const SendPay: React.FC = () => {
+
+const send: React.FC = () => {
   const navigate = useNavigate();
 
   const paymentMethods = [
@@ -15,10 +17,10 @@ const SendPay: React.FC = () => {
     },
     {
       id: 'basepay-name',
-      icon: User,
+      icon: AtSign ,
       title: 'Basepay Name',
       description: 'Send using basepay username',
-      iconBg: 'bg-blue-600',
+      iconBg: '',
       path: '/send-username'
     },
     {
@@ -37,20 +39,23 @@ const SendPay: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
       <div className="w-full max-w-[390px] min-h-screen bg-white shadow-2xl">
-        <div className="p-6">
+        
           {/* Header with Back Button */}
-          <button 
-            onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-2 text-blue-600 mb-6"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back</span>
-          </button>
-
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Send/Pay</h1>
+          <div className="bg-white px-6 py-4 border-b border-gray-100 flex items-center gap-4">
+                      <button
+                        onClick={() => navigate('/dashboard')}
+                        className="text-gray-600 hover:text-gray-900"
+                      >
+                        <ArrowLeft className="w-6 h-6" />
+                      </button>
+                      <h1 className="text-xl font-bold text-gray-900">Edit Profile</h1>
+                    </div>
+          
+<div className="p-6 space-y-6">
+          {/* <h1 className="text-2xl font-bold text-gray-900 mb-2">Send/Pay</h1> */}
 
           {/* Step Indicator */}
-          <div className="flex items-center justify-center mb-8">
+          <div className="flex items-center justify-center mb-3">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-gray-300"></div>
               <div className="w-2 h-2 rounded-full bg-blue-600"></div>
@@ -73,7 +78,7 @@ const SendPay: React.FC = () => {
                   onClick={() => handleMethodClick(method.path)}
                   className="w-full bg-white border-2 border-blue-600 rounded-2xl p-5 flex items-center gap-4 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
-                  <div className={`w-12 h-12 ${method.iconBg || 'bg-white border-2 border-gray-300'} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                  <div className={`w-12 h-12 ${method.iconBg || 'bg-white border-2 border-black-600'} rounded-xl flex items-center justify-center flex-shrink-0`}>
                     <Icon className={`w-6 h-6 ${method.iconBg ? 'text-white' : 'text-gray-700'}`} />
                   </div>
                   <div className="flex-1 text-left">
@@ -94,4 +99,4 @@ const SendPay: React.FC = () => {
   );
 };
 
-export default SendPay;
+export default send;

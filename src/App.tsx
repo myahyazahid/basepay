@@ -6,6 +6,7 @@ import Scan from "./pages/Scan";
 import Request from "./pages/Request";
 import History from "./pages/History";
 import AnalyticsPage from "./pages/Analytics";
+import Send from "./pages/send";
 import EditProfile from './pages/EditProfile'; 
 
 import Rewards from "./pages/Rewards";
@@ -25,6 +26,7 @@ function App() {
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/EditProfile" element={<EditProfile />} />
+        <Route path="/send" element={<Send />} />
       </Routes>
       <Analytics />
       <SpeedInsights />

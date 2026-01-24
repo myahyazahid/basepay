@@ -318,32 +318,7 @@ const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
           {/* Content */}
           <div className="p-6 space-y-6">
-            {/* Avatar Section */}
-            {/* <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8">
-              <div className="flex flex-col items-center">
-                <div className="relative">
-                  <div className="w-32 h-32 rounded-full bg-white/20 border-4 border-white flex items-center justify-center overflow-hidden">
-                    {userData.avatar ? (
-                      <img
-                        src={userData.avatar}
-                        alt="Avatar"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-                        <Camera className="w-12 h-12 text-gray-500" />
-                      </div>
-                    )}
-                  </div>
-                  <button className="absolute bottom-0 right-0 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors">
-                    <Camera className="w-5 h-5 text-blue-600" />
-                  </button>
-                </div>
-                <p className="text-white font-medium mt-4">Change Avatar</p>
-                <p className="text-blue-100 text-xs mt-1">Click the camera icon to upload</p>
-              </div>
-            </div> */}
-
+           
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8">
   <div className="flex flex-col items-center">
     <div className="relative">
