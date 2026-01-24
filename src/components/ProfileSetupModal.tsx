@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { UserCircle, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { UserCircle, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface ProfileSetupModalProps {
   isOpen: boolean;
@@ -16,7 +16,7 @@ const ProfileSetupModal: React.FC<ProfileSetupModalProps> = ({
 
   const handleSetupProfile = () => {
     onClose();
-    navigate('/profile');
+    navigate("/EditProfile");
   };
 
   return (
@@ -54,13 +54,13 @@ const ProfileSetupModal: React.FC<ProfileSetupModalProps> = ({
                   >
                     <X className="w-5 h-5" />
                   </button>
-                  
+
                   <div className="flex justify-center mb-4">
                     <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">
                       <UserCircle className="w-12 h-12 text-white" />
                     </div>
                   </div>
-                  
+
                   <Dialog.Title className="text-2xl font-bold text-white mb-2">
                     Complete Your Profile
                   </Dialog.Title>
@@ -79,14 +79,16 @@ const ProfileSetupModal: React.FC<ProfileSetupModalProps> = ({
                       <ul className="text-xs text-gray-600 space-y-2">
                         <li>• Get a personalized username (e.g., @yourname)</li>
                         <li>• Receive transaction notifications via email</li>
-                        <li>• Unlock exclusive features and rewards</li>
-                        <li>• Better security and account recovery</li>
+                        <li>• Unlock exclusive rewards</li>
+                        <li>• customer support priority</li>
                       </ul>
                     </div>
 
                     <div className="bg-yellow-50 border border-yellow-100 rounded-2xl p-4">
                       <p className="text-xs text-yellow-800">
-                        ⚠️ <span className="font-semibold">Important:</span> Complete your profile now to avoid missing important updates!
+                        ⚠️ <span className="font-semibold">Important:</span>{" "}
+                        Complete your profile now to avoid missing important
+                        updates!
                       </p>
                     </div>
                   </div>
@@ -99,7 +101,7 @@ const ProfileSetupModal: React.FC<ProfileSetupModalProps> = ({
                     >
                       Setup Profile Now
                     </button>
-                    
+
                     <button
                       onClick={onClose}
                       className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-2xl transition-all active:scale-95"

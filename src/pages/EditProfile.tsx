@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Camera, Loader2 } from 'lucide-react';
+import { ArrowLeft, Camera, Loader2,Upload, X } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import toast, { Toaster } from 'react-hot-toast';
 import { supabase } from '../config/supabase';
+import { uploadAvatar, deleteAvatar } from '../utils/avatarUpload';
 
 interface UserData {
   username: string;
@@ -31,6 +32,14 @@ const EditProfile: React.FC = () => {
   });
   const [basepayName, setBasepayName] = useState('');
   const [userId, setUserId] = useState<string>('');
+
+const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+
+
 
   // Redirect if not connected
   useEffect(() => {
@@ -87,6 +96,47 @@ const EditProfile: React.FC = () => {
     fetchUserData();
   }, [address]);
 
+
+   // ← TAMBAH FUNCTION INI
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      toast.error('Please upload an image file (JPG, PNG, WEBP, or GIF)');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error('File size too large. Maximum size is 5MB');
+      return;
+    }
+
+    // Set file and create preview
+    setAvatarFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setAvatarPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveAvatar = () => {
+    setAvatarFile(null);
+    setAvatarPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   // Handle input changes
   const handleInputChange = (field: keyof UserData, value: string) => {
     setUserData(prev => ({ ...prev, [field]: value }));
@@ -108,6 +158,34 @@ const EditProfile: React.FC = () => {
         return;
       }
 
+
+      let avatarUrl = userData.avatar;
+      
+      if (avatarFile) {
+        try {
+          setUploadingAvatar(true);
+          toast.loading('Uploading avatar...', { id: 'avatar-upload' });
+
+          // Delete old avatar if exists
+          if (userData.avatar) {
+            await deleteAvatar(userData.avatar);
+          }
+
+          // Upload new avatar
+          const newAvatarUrl = await uploadAvatar(avatarFile, userId);
+          avatarUrl = newAvatarUrl;
+
+          toast.success('Avatar uploaded!', { id: 'avatar-upload' });
+        } catch (error: any) {
+          toast.error(error.message || 'Failed to upload avatar', { id: 'avatar-upload' });
+          return;
+        } finally {
+          setUploadingAvatar(false);
+        }
+      }  
+
+      
+
       // Validate email format
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(userData.email)) {
@@ -121,7 +199,7 @@ const EditProfile: React.FC = () => {
         .update({
           username: userData.username.trim(),
           email: userData.email.trim(),
-          avatar: userData.avatar,
+          avatar: avatarUrl,
         })
         .eq('id_user', userId);
 
@@ -241,7 +319,7 @@ const EditProfile: React.FC = () => {
           {/* Content */}
           <div className="p-6 space-y-6">
             {/* Avatar Section */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8">
+            {/* <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8">
               <div className="flex flex-col items-center">
                 <div className="relative">
                   <div className="w-32 h-32 rounded-full bg-white/20 border-4 border-white flex items-center justify-center overflow-hidden">
@@ -264,7 +342,71 @@ const EditProfile: React.FC = () => {
                 <p className="text-white font-medium mt-4">Change Avatar</p>
                 <p className="text-blue-100 text-xs mt-1">Click the camera icon to upload</p>
               </div>
-            </div>
+            </div> */}
+
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8">
+  <div className="flex flex-col items-center">
+    <div className="relative">
+      <div className="w-32 h-32 rounded-full bg-white/20 border-4 border-white flex items-center justify-center overflow-hidden">
+        {avatarPreview || userData.avatar ? (
+          <img
+            src={avatarPreview || userData.avatar || ''}
+            alt="Avatar"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-300 flex items-center justify-center">
+            <Upload className="w-12 h-12 text-gray-500" />
+          </div>
+        )}
+      </div>
+      
+      {/* Upload Button */}
+      <button
+        type="button"
+        onClick={handleAvatarClick}
+        disabled={uploadingAvatar}
+        className="absolute bottom-0 right-0 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+      >
+        {uploadingAvatar ? (
+          <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+        ) : (
+          <Camera className="w-5 h-5 text-blue-600" />
+        )}
+      </button>
+
+      {/* Remove Avatar Button (jika ada preview) */}
+      {avatarPreview && (
+        <button
+          type="button"
+          onClick={handleRemoveAvatar}
+          className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
+        >
+          <X className="w-4 h-4 text-white" />
+        </button>
+      )}
+    </div>
+
+    {/* Hidden File Input */}
+    <input
+      ref={fileInputRef}
+      type="file"
+      accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+      onChange={handleAvatarChange}
+      className="hidden"
+    />
+
+    <p className="text-white font-medium mt-4">
+      {avatarPreview ? 'New Avatar Selected' : 'Change Avatar'}
+    </p>
+    <p className="text-blue-100 text-xs mt-1">
+      {avatarPreview 
+        ? 'Click Save Changes to upload' 
+        : 'Click the camera icon to upload (max 5MB)'
+      }
+    </p>
+  </div>
+</div>
 
             {/* Form Fields */}
             <div className="space-y-4">
