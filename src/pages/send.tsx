@@ -113,7 +113,7 @@ const send: React.FC = () => {
   };
 
   const handleBasepayName = () => {
-    navigate('/send-basepay-name');
+    navigate('/SendPage');
   };
 
   const handleWalletAddress = () => {
