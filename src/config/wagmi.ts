@@ -43,22 +43,71 @@ export const USDC_CONTRACT_ADDRESS =
   "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as `0x${string}`;
 
 // USDC ABI (minimal untuk balanceOf)
+// export const USDC_ABI = [
+//   {
+//     constant: true,
+//     inputs: [{ name: "_owner", type: "address" }],
+//     name: "balanceOf",
+//     outputs: [{ name: "balance", type: "uint256" }],
+//     type: "function",
+//   },
+//   {
+//     constant: true,
+//     inputs: [],
+//     name: "decimals",
+//     outputs: [{ name: "", type: "uint8" }],
+//     type: "function",
+//   },
+// ] as const;
+
 export const USDC_ABI = [
   {
-    constant: true,
-    inputs: [{ name: "_owner", type: "address" }],
-    name: "balanceOf",
-    outputs: [{ name: "balance", type: "uint256" }],
     type: "function",
+    name: "transfer",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "to", type: "address" },
+      { name: "amount", type: "uint256" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
   },
   {
-    constant: true,
-    inputs: [],
-    name: "decimals",
-    outputs: [{ name: "", type: "uint8" }],
     type: "function",
+    name: "balanceOf",
+    stateMutability: "view",
+    inputs: [{ name: "account", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "approve",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "spender", type: "address" },
+      { name: "amount", type: "uint256" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+  },
+  {
+    type: "function",
+    name: "allowance",
+    stateMutability: "view",
+    inputs: [
+      { name: "owner", type: "address" },
+      { name: "spender", type: "address" },
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "decimals",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint8" }],
   },
 ] as const;
+
+
 // Tambahkan di akhir file wagmi.ts
 export const BASESCAN_API_KEY = "G2YNEAWZRFPGSKV1HMGDS1TTV98JZKZ5AR"; // Nanti bisa daftar di basescan.org
 export const BASESCAN_API_URL = "https://api.basescan.org/api";

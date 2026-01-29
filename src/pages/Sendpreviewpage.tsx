@@ -4,9 +4,15 @@ import { ArrowLeft, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { parseUnits } from "viem";
 import { USDC_CONTRACT_ADDRESS, USDC_ABI } from "../config/wagmi";
-import { supabase } from "../config/supabase";
 import toast from "react-hot-toast";
 import type { BasepayNameResult } from "../hooks/Usebasepayname";
+import {
+  getUserIdFromWallet,
+  getUserPrimaryName,
+  isFirstTimeRecipient,
+  saveTransaction,
+  getBaseScanUrl,
+} from "../utils/Transactionutils";
 
 interface PreviewState {
   recipient: BasepayNameResult;
@@ -39,9 +45,6 @@ const SendPreviewPage: React.FC = () => {
       hash,
     });
 
-  // Conversion rate
-  const USDC_TO_IDR = 16800;
-
   // Redirect if no state
   useEffect(() => {
     if (!state || !isConnected) {
@@ -57,18 +60,14 @@ const SendPreviewPage: React.FC = () => {
       setCheckingHistory(true);
 
       try {
-        const { data, error } = await supabase
-          .from("transactions")
-          .select("id")
-          .eq("id_user", address)
-          .eq("to_wallet", state.recipient.wallet)
-          .limit(1);
-
-        if (error) throw error;
-
-        setIsFirstTime(!data || data.length === 0);
+        const isFirstTime = await isFirstTimeRecipient(
+          address,
+          state.recipient.wallet
+        );
+        setIsFirstTime(isFirstTime);
       } catch (error) {
         console.error("Error checking transaction history:", error);
+        setIsFirstTime(true); // Treat as first-time on error (safer)
       } finally {
         setCheckingHistory(false);
       }
@@ -77,70 +76,98 @@ const SendPreviewPage: React.FC = () => {
     checkFirstTime();
   }, [address, state?.recipient]);
 
-  // Handle successful transaction
+  // Handle successful transaction - Save to Supabase
   useEffect(() => {
-    const saveTransaction = async () => {
+    const handleTransactionSuccess = async () => {
       if (!isConfirmed || !hash || !address || !state) return;
 
-      try {
-        // Get user's basepay name (if exists)
-        const { data: userData } = await supabase
-          .from("basepay_names")
-          .select("name")
-          .eq("id_user", address)
-          .eq("is_primary", true)
-          .single();
+      console.log("💾 Processing successful transaction...");
 
-        // Insert transaction to Supabase
-        const { error } = await supabase.from("transactions").insert({
-          id_user: address,
-          type: "transfer",
-          direction: "outflow",
-          amount: state.amountUsdc,
-          currency: "USDC",
-          from_wallet: address,
-          to_wallet: state.recipient.wallet,
-          from_name: userData?.name || null,
-          to_name: state.recipient.name,
+      try {
+        // 1. Get sender's user ID
+        const userId = await getUserIdFromWallet(address);
+        if (!userId) {
+          throw new Error("User not found in database");
+        }
+
+        // 2. Get sender's primary BasePay name
+        const senderName = await getUserPrimaryName(userId);
+        console.log("📛 Sender name:", senderName || "None");
+
+        // 3. Save transaction
+        const result = await saveTransaction({
+          userId,
+          fromWallet: address,
+          toWallet: state.recipient.wallet,
+          fromName: senderName,
+          toName: state.recipient.name,
+          amountUsdc: state.amountUsdc,
           note: state.note || null,
-          tx_hash: hash,
-          status: "success",
+          txHash: hash,
         });
 
-        if (error) throw error;
+        if (!result.success) {
+          throw new Error(result.error || "Failed to save transaction");
+        }
 
-        toast.success("Transaction saved successfully!");
+        toast.success("Transaction saved!", {
+          icon: "💾",
+          duration: 2000,
+        });
 
-        // Navigate to success page after 2 seconds
+        // 4. Navigate to dashboard after 2 seconds
         setTimeout(() => {
           navigate("/dashboard", { replace: true });
         }, 2000);
       } catch (error: any) {
-        console.error("Error saving transaction:", error);
-        toast.error("Failed to save transaction record");
+        console.error("❌ Error handling transaction success:", error);
+        toast.error(error.message || "Failed to save transaction", {
+          duration: 4000,
+        });
+
+        // Still navigate to dashboard even if save fails
+        setTimeout(() => {
+          navigate("/dashboard", { replace: true });
+        }, 3000);
       }
     };
 
-    saveTransaction();
+    handleTransactionSuccess();
   }, [isConfirmed, hash, address, state, navigate]);
 
   // Handle send transaction
   const handleSend = async () => {
-    if (!state || !address) return;
+    if (!state || !address) {
+      toast.error("Missing required data");
+      return;
+    }
 
     try {
-      // Convert USDC amount to contract units (6 decimals)
-      const amountInUnits = parseUnits(state.amountUsdc.toString(), 6);
+      console.log("🚀 Initiating transaction...");
+      console.log("📍 From:", address);
+      console.log("📍 To:", state.recipient.wallet);
+      console.log("💰 Amount (USDC):", state.amountUsdc);
+      console.log("💰 Amount (IDR):", state.amountIdr);
 
+      // Convert USDC amount to contract units (6 decimals)
+      const amountInUnits = parseUnits(state.amountUsdc.toFixed(6), 6);
+      
+      console.log("🔢 Amount in units:", amountInUnits.toString());
+
+      // Call smart contract
       writeContract({
         address: USDC_CONTRACT_ADDRESS,
         abi: USDC_ABI,
         functionName: "transfer",
-        args: [state.recipient.wallet, amountInUnits],
+        args: [state.recipient.wallet as `0x${string}`, amountInUnits],
       });
+
+      console.log("✅ Transaction request sent to wallet");
     } catch (error: any) {
-      console.error("Error initiating transaction:", error);
-      toast.error("Failed to initiate transaction");
+      console.error("❌ Error initiating transaction:", error);
+      toast.error(error.message || "Failed to initiate transaction", {
+        duration: 4000,
+      });
     }
   };
 
@@ -183,18 +210,47 @@ const SendPreviewPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
         <div className="w-full max-w-[390px] min-h-screen bg-white shadow-2xl flex flex-col items-center justify-center px-8">
-          <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-6">
+          <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-6 animate-bounce">
             <CheckCircle2 className="w-12 h-12 text-green-600" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Transaction Successful!
           </h2>
-          <p className="text-sm text-gray-600 text-center mb-6">
+          <p className="text-sm text-gray-600 text-center mb-2">
             Your payment has been sent successfully
           </p>
-          <div className="text-xs text-gray-500 font-mono bg-gray-50 px-4 py-2 rounded-lg">
-            {shortenAddress(hash || "")}
+          <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 w-full mb-6">
+            <p className="text-xs text-gray-600 mb-2 text-center">
+              Transaction Hash:
+            </p>
+            <p className="text-xs text-gray-900 font-mono text-center break-all">
+              {hash}
+            </p>
+            <div className="flex items-center justify-center gap-4 mt-3">
+              <button
+                onClick={() => {
+                  if (hash) {
+                    navigator.clipboard.writeText(hash);
+                    toast.success("Hash copied!");
+                  }
+                }}
+                className="text-xs text-blue-600 hover:text-blue-700 font-semibold"
+              >
+                Copy Hash
+              </button>
+              <a
+                href={getBaseScanUrl(hash as string)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-600 hover:text-blue-700 font-semibold"
+              >
+                View on BaseScan →
+              </a>
+            </div>
           </div>
+          <p className="text-xs text-gray-500">
+            Redirecting to dashboard...
+          </p>
         </div>
       </div>
     );
