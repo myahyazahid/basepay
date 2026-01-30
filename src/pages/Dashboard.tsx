@@ -406,26 +406,33 @@ const Dashboard: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {transactions.map((tx) => (
-                        <tr
-                          key={tx.id}
-                          className="border-b border-gray-100 last:border-0"
-                        >
-                          <td className="px-4 py-4 text-xs text-gray-900 font-medium">
-                            {tx.type}
-                          </td>
-                          <td className="px-4 py-4 text-xs text-gray-600">
-                            {tx.from_name || shortenAddress(tx.from_wallet)}
-                          </td>
-                          <td className="px-4 py-4 text-xs text-gray-600">
-                            {tx.to_name || shortenAddress(tx.to_wallet)}
-                          </td>
-                          <td className="px-4 py-4 text-xs text-gray-900 font-semibold text-right">
-                            {tx.amount.toLocaleString()} {tx.currency}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
+  {transactions.map((tx) => {
+    // Logic untuk display type yang lebih akurat
+    let displayType = tx.type; // Default pakai type dari database
+       
+    // Color & prefix berdasarkan direction
+    const amountColor = tx.direction === 'inflow' ? 'text-green-600' : 'text-red-600';
+    const amountPrefix = tx.direction === 'inflow' ? '+' : '-';
+    
+    return (
+      <tr key={tx.id} className="border-b border-gray-100 last:border-0">
+        <td className="px-4 py-4 text-xs text-gray-900 font-medium">
+          {displayType}
+        </td>
+        <td className="px-4 py-4 text-xs text-gray-600">
+          {tx.from_name || shortenAddress(tx.from_wallet)}
+        </td>
+        <td className="px-4 py-4 text-xs text-gray-600">
+          {tx.to_name || shortenAddress(tx.to_wallet)}
+        </td>
+        <td className={`px-4 py-4 text-xs font-semibold text-right ${amountColor}`}>
+          {amountPrefix}{tx.amount.toLocaleString()} {tx.currency}
+
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
                   </table>
                 )}
               </div>
