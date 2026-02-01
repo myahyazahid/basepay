@@ -2,60 +2,75 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 
 /**
- * @notice YOLO minimal payment processor
- * @dev Fee langsung masuk treasury, no safety net
+ * @notice Wallet-friendly payment processor
+ * @dev Uses standard approve + transferFrom (no permit)
+ * @dev Fee automatically deducted and sent to treasury
  */
 contract BasepayProcessor {
+    IERC20 public immutable usdc;
 
-    IERC20Permit public immutable usdc;
+   address public constant TREASURY = 0x6B82a9E45d4331C35Ffc0a38FD084Ca508EE7481;
 
-    address constant TREASURY =
-        0xDcaf4cBAc0246DE4e1001444B02cBE814E4bAfa4;
+    uint256 public constant FEE_BP = 300;  // 3%
+    uint256 public constant BP = 10_000;
 
-    uint256 constant FEE_BP = 300;     // 1%
-    uint256 constant BP = 10_000;
+    event Payment(
+        address indexed from,
+        address indexed to,
+        uint256 totalAmount,
+        uint256 recipientAmount,
+        uint256 fee
+    );
 
     constructor(address _usdc) {
-        usdc = IERC20Permit(_usdc);
+        usdc = IERC20(_usdc);
     }
 
-    function pay(
-        address to,
-        uint256 amount,
-        uint256 deadline,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external {
+    /**
+     * @notice Pay with automatic fee deduction
+     * @dev User must approve USDC to this contract first
+     * @param to Recipient address
+     * @param amount Total amount (including fee)
+     */
+    function pay(address to, uint256 amount) external {
+        require(to != address(0), "Invalid recipient");
+        require(amount > 0, "Amount must be > 0");
+
+        // Calculate fee
         uint256 fee = (amount * FEE_BP) / BP;
+        uint256 recipientAmount = amount - fee;
 
-        // permit (IERC20Permit)
-        usdc.permit(
-            msg.sender,
-            address(this),
-            amount,
-            deadline,
-            v,
-            r,
-            s
+        // Transfer to recipient
+        require(
+            usdc.transferFrom(msg.sender, to, recipientAmount),
+            "Transfer to recipient failed"
         );
 
-        // transferFrom (IERC20)
-        IERC20(address(usdc)).transferFrom(
-            msg.sender,
-            to,
-            amount - fee
-        );
-
-        if (fee != 0) {
-            IERC20(address(usdc)).transferFrom(
-                msg.sender,
-                TREASURY,
-                fee
+        // Transfer fee to treasury
+        if (fee > 0) {
+            require(
+                usdc.transferFrom(msg.sender, TREASURY, fee),
+                "Fee transfer failed"
             );
         }
+
+        emit Payment(msg.sender, to, amount, recipientAmount, fee);
+    }
+
+    /**
+     * @notice Get fee amount for given total
+     * @param amount Total amount
+     * @return fee Fee amount
+     * @return recipientAmount Amount recipient receives
+     */
+    function calculateFee(uint256 amount) 
+        external 
+        pure 
+        returns (uint256 fee, uint256 recipientAmount) 
+    {
+        fee = (amount * FEE_BP) / BP;
+        recipientAmount = amount - fee;
     }
 }

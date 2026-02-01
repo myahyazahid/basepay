@@ -131,53 +131,49 @@
 // export const BASESCAN_API_URL = "https://api.basescan.org/api";
 
 
-
 import { http, createConfig } from "wagmi";
 import { base } from "wagmi/chains";
 import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors";
 
-// GANTI ini dengan Project ID kamu dari https://cloud.walletconnect.com
-// Kalau belum punya, pakai dummy dulu atau kosongin
 const projectId = "52732025d7f26eafe99545ebbad20640";
 
 export const config = createConfig({
-
   chains: [base],
-
   connectors: [
     injected({
+      target: "metaMask", // Specify target
       shimDisconnect: true,
     }),
-     walletConnect({
+    walletConnect({
       projectId,
       showQrModal: true,
       metadata: {
         name: 'BasePay',
         description: 'Crypto Payment Solution on Base',
-        url:
-          typeof window !== 'undefined'
-            ? window.location.origin
-            : 'https://basepay.vercel.app', // ganti sesuai domain
+        url: typeof window !== 'undefined' ? window.location.origin : 'https://basepay.vercel.app',
         icons: ['https://avatars.githubusercontent.com/u/37784886'],
       },
     }),
     coinbaseWallet({
       appName: "BasePay",
+      preference: "smartWalletOnly", // Add this if using Coinbase Smart Wallet
     }),
   ],
   transports: {
-    [base.id]: http(),
+    [base.id]: http(), // Make sure this is correct
   },
+  // Add these for better stability
+  ssr: false,
+  multiInjectedProviderDiscovery: false,
 });
-
 // USDC Contract on Base
 export const USDC_CONTRACT_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 
-// BasepayProcessor Contract (Deployed on Base Mainnet - v2 without permit)
-export const BASEPAY_PROCESSOR_ADDRESS = "0x1Db89eCf4B7df6981a0726965021A22121BF6A00";
+// BasepayProcessor Contract (Deployed on Base Mainnet)
+export const BASEPAY_PROCESSOR_ADDRESS = "0xD8a1385bC64d99612746595FdD39B6c2DbA502Fc";
 
 // Treasury wallet address
-export const TREASURY_ADDRESS = "0x6b82a9e45d4331c35ffc0a38fd084ca508ee7481";
+export const TREASURY_ADDRESS = "0xDcaf4cBAc0246DE4e1001444B02cBE814E4bAfa4";
 
 // Fee percentage (3%)
 export const FEE_PERCENTAGE = 0.03;
@@ -424,3 +420,7 @@ export const USDC_PERMIT_TYPES = {
     { name: "deadline", type: "uint256" },
   ],
 } as const;
+
+
+export const BASESCAN_API_KEY = "G2YNEAWZRFPGSKV1HMGDS1TTV98JZKZ5AR";
+export const BASESCAN_API_URL = "https://api.basescan.org/api";
