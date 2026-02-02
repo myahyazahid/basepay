@@ -7,10 +7,10 @@ import Request from "./pages/Request";
 import History from "./pages/History";
 import AnalyticsPage from "./pages/Analytics";
 import Send from "./pages/send";
-import EditProfile from './pages/EditProfile'; 
-import SendPage from './pages/SendPage'; 
-import Sendpreviewpage from './pages/Sendpreviewpage'; 
-
+import EditProfile from "./pages/EditProfile";
+import SendPage from "./pages/SendPage";
+import Sendpreviewpage from "./pages/Sendpreviewpage";
+import Rewardspage from "./pages/Rewardspage";
 
 import Rewards from "./pages/Rewards";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -31,10 +31,8 @@ function App() {
         <Route path="/EditProfile" element={<EditProfile />} />
         <Route path="/send" element={<Send />} />
         <Route path="/SendPage" element={<SendPage />} />
-         <Route path="/Sendpreviewpage" element={<Sendpreviewpage />} />
-
-
-        
+        <Route path="/Sendpreviewpage" element={<Sendpreviewpage />} />
+        <Route path="/Rewardspage" element={<Rewardspage />} />
       </Routes>
       <Analytics />
       <SpeedInsights />
