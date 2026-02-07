@@ -276,7 +276,7 @@ const Dashboard: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => navigate("/requestpage")}
+                  onClick={() => navigate("/Requestpage")}
                   className="flex flex-col items-center gap-2"
                 >
                   <div className="w-14 h-14 border-2 border-gray-900 rounded-2xl flex items-center justify-center hover:bg-gray-50 transition-colors">
