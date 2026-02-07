@@ -99,9 +99,9 @@ const WalletAddressRequestPage: React.FC = () => {
     }
   };
 
-  const shortenAddress = (addr: string) => {
-    return `${addr.slice(0, 10)}...${addr.slice(-8)}`;
-  };
+  // const shortenAddress = (addr: string) => {
+  //   return `${addr.slice(0, 10)}...${addr.slice(-8)}`;
+  // };
 
   if (loading) {
     return (

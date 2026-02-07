@@ -6,7 +6,8 @@ import QRCode from "qrcode";
 import toast from "react-hot-toast";
 import { supabase } from "../config/supabase";
 import { getUserIdFromWallet, getUserPrimaryName } from "../utils/Transactionutils";
-import { idrToUsdc, usdcToIdr } from "../utils/Transactionutils";
+import { idrToUsdc } from "../utils/Transactionutils";
+// import { idrToUsdc, usdcToIdr } from "../utils/Transactionutils";
 
 const AmountQRCodeRequestPage: React.FC = () => {
   const navigate = useNavigate();
