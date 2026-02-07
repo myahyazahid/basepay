@@ -3,7 +3,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Scan from "./pages/Scan";
-import Request from "./pages/Request";
+
 import History from "./pages/History";
 import AnalyticsPage from "./pages/Analytics";
 import Send from "./pages/send";
@@ -12,6 +12,9 @@ import SendPage from "./pages/SendPage";
 import Sendpreviewpage from "./pages/Sendpreviewpage";
 import Rewardspage from "./pages/Rewardspage";
 import Requestpage from "./pages/Requestpage";
+import Qrcoderequestpage from "./pages/Qrcoderequestpage";
+import Amountqrcoderequestpage from "./pages/Amountqrcoderequestpage";
+import Walletaddressrequestpage from "./pages/Walletaddressrequestpage";
 
 import Rewards from "./pages/Rewards";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -25,7 +28,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/scan" element={<Scan />} />
-        <Route path="/request" element={<Request />} />
+
         <Route path="/history" element={<History />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/rewards" element={<Rewards />} />
@@ -34,7 +37,16 @@ function App() {
         <Route path="/SendPage" element={<SendPage />} />
         <Route path="/Sendpreviewpage" element={<Sendpreviewpage />} />
         <Route path="/Rewardspage" element={<Rewardspage />} />
-         <Route path="/Requestpage" element={<Requestpage />} />
+        <Route path="/Requestpage" element={<Requestpage />} />
+        <Route path="/Qrcoderequestpage" element={<Qrcoderequestpage />} />
+        <Route
+          path="/Amountqrcoderequestpage"
+          element={<Amountqrcoderequestpage />}
+        />
+        <Route
+          path="/Walletaddressrequestpage"
+          element={<Walletaddressrequestpage />}
+        />
       </Routes>
       <Analytics />
       <SpeedInsights />

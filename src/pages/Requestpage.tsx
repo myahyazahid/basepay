@@ -11,21 +11,21 @@ const RequestPage: React.FC = () => {
       icon: QrCode,
       title: "QR Code",
       description: "Show QR code to sender",
-      route: "/request/qr-code",
+      route: "/Qrcoderequestpage",
     },
     {
       id: "amount-qr",
       icon: QrCode,
       title: "Amount QR Code",
       description: "request fixed amount QR code",
-      route: "/request/amount-qr",
+      route: "/Amountqrcoderequestpage",
     },
     {
       id: "wallet-address",
       icon: Wallet,
       title: "Wallet Address",
       description: "request using wallet address",
-      route: "/request/wallet-address",
+      route: "/Walletaddressrequestpage",
     },
   ];
 
@@ -56,7 +56,7 @@ const RequestPage: React.FC = () => {
           <div className="space-y-3">
             {requestMethods.map((method) => {
               const Icon = method.icon;
-              
+
               return (
                 <button
                   key={method.id}
