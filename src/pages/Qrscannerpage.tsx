@@ -7,7 +7,8 @@ import toast from "react-hot-toast";
 
 const QRScannerPage: React.FC = () => {
   const navigate = useNavigate();
-  const { address, isConnected } = useAccount();
+//   const { address, isConnected } = useAccount();
+  const {isConnected } = useAccount();
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
