@@ -109,8 +109,9 @@ const send: React.FC = () => {
   const navigate = useNavigate();
 
   const handleScanQR = () => {
-    navigate('/scan');
+    navigate('/Qrscannerpage');
   };
+  
 
   const handleBasepayName = () => {
     navigate('/SendPage');

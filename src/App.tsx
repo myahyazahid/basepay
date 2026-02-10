@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
-import Scan from "./pages/Scan";
+
 
 import History from "./pages/History";
 import AnalyticsPage from "./pages/Analytics";
@@ -15,6 +15,10 @@ import Requestpage from "./pages/Requestpage";
 import Qrcoderequestpage from "./pages/Qrcoderequestpage";
 import Amountqrcoderequestpage from "./pages/Amountqrcoderequestpage";
 import Walletaddressrequestpage from "./pages/Walletaddressrequestpage";
+import Qrscannerpage from "./pages/Qrscannerpage";
+
+
+ 
 
 import Rewards from "./pages/Rewards";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -27,7 +31,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/scan" element={<Scan />} />
+      
 
         <Route path="/history" element={<History />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
@@ -39,6 +43,9 @@ function App() {
         <Route path="/Rewardspage" element={<Rewardspage />} />
         <Route path="/Requestpage" element={<Requestpage />} />
         <Route path="/Qrcoderequestpage" element={<Qrcoderequestpage />} />
+        <Route path="/Qrscannerpage" element={<Qrscannerpage />} />
+
+        
         <Route
           path="/Amountqrcoderequestpage"
           element={<Amountqrcoderequestpage />}
